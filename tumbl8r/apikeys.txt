@@ -1,0 +1,3 @@
+﻿tumbl8r 
+OAuth Consumer Key:  rJfXOBD2kHRdY9uj45CAztR1R9QbGSSCBh1z3QTLd0kJI2y5a0 
+Secret Key:  ebCMEFaa0mUIBBrEeezQ5PQPUMRtvAEL6aQgFoXBCSA6deF0Wg
