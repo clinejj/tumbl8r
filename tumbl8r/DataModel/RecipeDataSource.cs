@@ -24,14 +24,14 @@ using Windows.Storage;
 // Applications may use this model as a starting point and build on it, or discard it entirely and
 // replace it with something appropriate to their needs.
 
-namespace ContosoCookbook.Data
+namespace tumbl8r.Data
 {
     /// <summary>
     /// Base class for <see cref="RecipeDataItem"/> and <see cref="RecipeDataGroup"/> that
     /// defines properties common to both.
     /// </summary>
     [Windows.Foundation.Metadata.WebHostHidden]
-    public abstract class RecipeDataCommon : ContosoCookbook.Common.BindableBase
+    public abstract class RecipeDataCommon : tumbl8r.Common.BindableBase
     {
         internal  static Uri _baseUri = new Uri("ms-appx:///");
 

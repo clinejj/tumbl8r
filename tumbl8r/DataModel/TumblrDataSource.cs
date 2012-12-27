@@ -78,46 +78,41 @@ namespace tumbl8r.Data
         public TumblrDataCommon(String jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._blog_name = root.GetNamedString(STR_BLOG_NAME);
-            this._bookmarklet = root.GetNamedBoolean(STR_BOOKMARKLET);
-            this._date = root.GetNamedString(STR_DATE);
-            this._format = root.GetNamedString(STR_FORMAT);
-            this._id = (long) root.GetNamedNumber(STR_ID);
-            this._liked = root.GetNamedBoolean(STR_LIKED);
-            this._mobile = root.GetNamedBoolean(STR_MOBILE);
-            this._post_url = root.GetNamedString(STR_POST_URL);
-            this._reblog_key = root.GetNamedString(STR_REBLOG_KEY);
-            this._source_title = root.GetNamedString(STR_SOURCE_TITLE);
-            this._source_url = root.GetNamedString(STR_SOURCE_URL);
-            this._state = root.GetNamedString(STR_STATE);
-            this._tags = new Collection<string>();
-            setTagsFromArray(root.GetNamedArray(STR_TAGS));
-            this._timestamp = (long) root.GetNamedNumber(STR_TIMESTAMP);
-            this._total_posts = (long) root.GetNamedNumber(STR_TOTAL_POSTS);
-            this._type = root.GetNamedString(STR_TYPE);
-        }
-
-        public TumblrDataCommon(String blogName, long id, String postURL, String type, long timestamp, String date, String format, String reblogKey,
-                                String tags, bool bookmarkLet, bool mobile, String sourceURL, String sourceTitle, bool liked, 
-                                String state, long totalPosts)
-        {
-            this._blog_name = blogName;
-            this._bookmarklet = bookmarkLet;
-            this._date = date;
-            this._format = format;
-            this._id = id;
-            this._liked = liked;
-            this._mobile = mobile;
-            this._post_url = postURL;
-            this._reblog_key = reblogKey;
-            this._source_title = sourceTitle;
-            this._source_url = sourceURL;
-            this._state = state;
-            this._tags = new Collection<string>();
-            setTagsFromString(tags);
-            this._timestamp = timestamp;
-            this._total_posts = totalPosts;
-            this._type = type;
+            if (root.ContainsKey(STR_BLOG_NAME))
+                this._blog_name = root.GetNamedString(STR_BLOG_NAME);
+            if (root.ContainsKey(STR_BOOKMARKLET))
+                this._bookmarklet = root.GetNamedBoolean(STR_BOOKMARKLET);
+            if (root.ContainsKey(STR_DATE))
+                this._date = root.GetNamedString(STR_DATE);
+            if (root.ContainsKey(STR_FORMAT))
+                this._format = root.GetNamedString(STR_FORMAT);
+            if (root.ContainsKey(STR_ID))
+                this._id = (long) root.GetNamedNumber(STR_ID);
+            if (root.ContainsKey(STR_LIKED))
+                this._liked = root.GetNamedBoolean(STR_LIKED);
+            if (root.ContainsKey(STR_MOBILE))
+                this._mobile = root.GetNamedBoolean(STR_MOBILE);
+            if (root.ContainsKey(STR_POST_URL))
+                this._post_url = root.GetNamedString(STR_POST_URL);
+            if (root.ContainsKey(STR_REBLOG_KEY))
+                this._reblog_key = root.GetNamedString(STR_REBLOG_KEY);
+            if (root.ContainsKey(STR_SOURCE_TITLE))
+                this._source_title = root.GetNamedString(STR_SOURCE_TITLE);
+            if (root.ContainsKey(STR_SOURCE_URL))
+                this._source_url = root.GetNamedString(STR_SOURCE_URL);
+            if (root.ContainsKey(STR_STATE))
+                this._state = root.GetNamedString(STR_STATE);
+            if (root.ContainsKey(STR_TAGS))
+            {
+                this._tags = new Collection<string>();
+                setTagsFromArray(root.GetNamedArray(STR_TAGS));
+            }
+            if (root.ContainsKey(STR_TIMESTAMP))
+                this._timestamp = (long) root.GetNamedNumber(STR_TIMESTAMP);
+            if (root.ContainsKey(STR_TOTAL_POSTS))
+                this._total_posts = (long) root.GetNamedNumber(STR_TOTAL_POSTS);
+            if (root.ContainsKey(STR_TYPE))
+                this._type = root.GetNamedString(STR_TYPE);
         }
 
         private long _id = 0;
@@ -244,9 +239,9 @@ namespace tumbl8r.Data
 
         private void setTagsFromArray(JsonArray arr)
         {
-            foreach (JsonObject item in arr)
+            foreach (var item in arr)
             {
-                this._tags.Add(item.ToString());
+                this._tags.Add(item.GetString());
             }
         }
     }
@@ -268,8 +263,10 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._body = root.GetNamedString(STR_BODY);
-            this._title = root.GetNamedString(STR_TITLE);
+            if (root.ContainsKey(STR_BODY))
+                this._body = root.GetNamedString(STR_BODY);
+            if (root.ContainsKey(STR_TITLE))
+                this._title = root.GetNamedString(STR_TITLE);
         }
 
         private string _title = string.Empty;
@@ -308,10 +305,16 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._caption = root.GetNamedString(STR_CAPTION);
-            this._width = (int) root.GetNamedNumber(STR_WIDTH);
-            this._height = (int) root.GetNamedNumber(STR_HEIGHT);
-            setPhotosFromJsonArr(root.GetNamedArray(STR_PHOTOS));
+            if (root.ContainsKey(STR_CAPTION))
+                this._caption = root.GetNamedString(STR_CAPTION);
+            if (root.ContainsKey(STR_WIDTH))
+                this._width = (int) root.GetNamedNumber(STR_WIDTH);
+            if (root.ContainsKey(STR_HEIGHT))
+                this._height = (int) root.GetNamedNumber(STR_HEIGHT);
+            if (root.ContainsKey(STR_PHOTOS))
+                setPhotosFromJsonArr(root.GetNamedArray(STR_PHOTOS));
+            if (_photos.Count > 0)
+                SetImage(_photos.First().Url);
         }
 
         private string _caption = string.Empty;
@@ -342,16 +345,66 @@ namespace tumbl8r.Data
             set { _photos = value; }
         }
 
+        private ImageSource _image = null;
+        private String _imagePath = null;
+
+        public Uri ImagePath
+        {
+            get
+            {
+                return new Uri(RecipeDataCommon._baseUri, this._imagePath);
+            }
+        }
+
+        public ImageSource Image
+        {
+            get
+            {
+                if (this._image == null && this._imagePath != null)
+                {
+                    this._image = new BitmapImage(new Uri(this._imagePath));
+                }
+                return this._image;
+            }
+
+            set
+            {
+                this._imagePath = null;
+                this.SetProperty(ref this._image, value);
+            }
+        }
+
+        public void SetImage(String path)
+        {
+            this._image = null;
+            this._imagePath = path;
+            this.OnPropertyChanged("Image");
+        }
+
+        public string GetImageUri()
+        {
+            return _imagePath;
+        }
+
         private void setPhotosFromJsonArr(JsonArray photos)
         {
             this._photos = new Collection<PhotoItem>();
-            foreach (JsonObject photo in photos)
+            foreach (var pl in photos)
             {
+                JsonObject photo = pl.GetObject();
                 PhotoItem p = new PhotoItem();
-                p.Caption = photo.GetNamedString(STR_CAPTION);
-                p.Url = photo.GetNamedString(STR_URL);
-                p.Width = (int) photo.GetNamedNumber(STR_WIDTH);
-                p.Height = (int) photo.GetNamedNumber(STR_HEIGHT);
+                if (photo.ContainsKey(STR_CAPTION))
+                    p.Caption = photo.GetNamedString(STR_CAPTION);
+                if (photo.ContainsKey(STR_ALT_SIZES))
+                {
+                    JsonObject first = photo.GetNamedArray(STR_ALT_SIZES).First().GetObject();
+                    if (first.ContainsKey(STR_URL))
+                        p.Url = first.GetNamedString(STR_URL);
+                    if (first.ContainsKey(STR_WIDTH))
+                        p.Width = (int)first.GetNamedNumber(STR_WIDTH);
+                    if (first.ContainsKey(STR_HEIGHT))
+                        p.Height = (int)first.GetNamedNumber(STR_HEIGHT);
+                }
                 this._photos.Add(p);
             }
         }
@@ -406,8 +459,10 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._source = root.GetNamedString(STR_SOURCE);
-            this._text = root.GetNamedString(STR_TEXT);
+            if (root.ContainsKey(STR_SOURCE))
+                this._source = root.GetNamedString(STR_SOURCE);
+            if (root.ContainsKey(STR_TEXT))
+                this._text = root.GetNamedString(STR_TEXT);
         }
 
         private string _text = string.Empty;
@@ -443,9 +498,12 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._url = root.GetNamedString(STR_URL);
-            this._title = root.GetNamedString(STR_TITLE);
-            this._desc = root.GetNamedString(STR_DESC);
+            if (root.ContainsKey(STR_URL))
+                this._url = root.GetNamedString(STR_URL);
+            if (root.ContainsKey(STR_TITLE))
+                this._title = root.GetNamedString(STR_TITLE);
+            if (root.ContainsKey(STR_DESC))
+                this._desc = root.GetNamedString(STR_DESC);
         }
 
         private string _title = string.Empty;
@@ -491,9 +549,12 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._body = root.GetNamedString(STR_BODY);
-            this._title = root.GetNamedString(STR_TITLE);
-            setDialogueFromArray(root.GetNamedArray(STR_DIALOGUE));
+            if (root.ContainsKey(STR_BODY))
+                this._body = root.GetNamedString(STR_BODY);
+            if (root.ContainsKey(STR_TITLE))
+                this._title = root.GetNamedString(STR_TITLE);
+            if (root.ContainsKey(STR_DIALOGUE))
+                setDialogueFromArray(root.GetNamedArray(STR_DIALOGUE));
         }
 
         private string _title = string.Empty;
@@ -520,12 +581,16 @@ namespace tumbl8r.Data
         private void setDialogueFromArray(JsonArray arr)
         {
             this._dialogue = new Collection<ChatItem>();
-            foreach (JsonObject item in arr)
+            foreach (var a in arr)
             {
+                JsonObject item = a.GetObject();
                 ChatItem c = new ChatItem();
-                c.Name = item.GetNamedString(STR_NAME);
-                c.Label = item.GetNamedString(STR_LABEL);
-                c.Phrase = item.GetNamedString(STR_PHRASE);
+                if (item.ContainsKey(STR_NAME))
+                    c.Name = item.GetNamedString(STR_NAME);
+                if (item.ContainsKey(STR_LABEL))
+                    c.Label = item.GetNamedString(STR_LABEL);
+                if (item.ContainsKey(STR_PHRASE))
+                    c.Phrase = item.GetNamedString(STR_PHRASE);
                 this._dialogue.Add(c);
             }
         }
@@ -579,15 +644,24 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._player = root.GetNamedString(STR_PLAYER);
-            this._caption = root.GetNamedString(STR_CAPTION);
-            this._plays = (int)root.GetNamedNumber(STR_PLAYS);
-            this._albumart = root.GetNamedString(STR_ALBUM_ART);
-            this._artist = root.GetNamedString(STR_ARTIST);
-            this._album = root.GetNamedString(STR_ALBUM);
-            this._trackname = root.GetNamedString(STR_TRACK_NAME);
-            this._tracknum = (int)root.GetNamedNumber(STR_TRACK_NUMBER);
-            this._year = (int)root.GetNamedNumber(STR_YEAR);
+            if (root.ContainsKey(STR_PLAYER))
+                this._player = root.GetNamedString(STR_PLAYER);
+            if (root.ContainsKey(STR_CAPTION))
+                this._caption = root.GetNamedString(STR_CAPTION);
+            if (root.ContainsKey(STR_PLAYS))
+                this._plays = (int)root.GetNamedNumber(STR_PLAYS);
+            if (root.ContainsKey(STR_ALBUM_ART))
+                this._albumart = root.GetNamedString(STR_ALBUM_ART);
+            if (root.ContainsKey(STR_ARTIST))
+                this._artist = root.GetNamedString(STR_ARTIST);
+            if (root.ContainsKey(STR_ALBUM))
+                this._album = root.GetNamedString(STR_ALBUM);
+            if (root.ContainsKey(STR_TRACK_NAME))
+                this._trackname = root.GetNamedString(STR_TRACK_NAME);
+            if (root.ContainsKey(STR_TRACK_NUMBER))
+                this._tracknum = (int)root.GetNamedNumber(STR_TRACK_NUMBER);
+            if (root.ContainsKey(STR_YEAR))
+                this._year = (int)root.GetNamedNumber(STR_YEAR);
         }
 
         private string _caption = string.Empty;
@@ -673,8 +747,10 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._caption = root.GetNamedString(STR_CAPTION);
-            setPlayersFromArr(root.GetNamedArray(STR_PLAYER));
+            if (root.ContainsKey(STR_CAPTION))
+                this._caption = root.GetNamedString(STR_CAPTION);
+            if (root.ContainsKey(STR_PLAYER))
+                setPlayersFromArr(root.GetNamedArray(STR_PLAYER));
         }
 
         private string _caption = string.Empty;
@@ -694,11 +770,14 @@ namespace tumbl8r.Data
         private void setPlayersFromArr(JsonArray arr)
         {
             this._player = new Collection<VideoItem>();
-            foreach (JsonObject item in arr)
+            foreach (var a in arr)
             {
+                JsonObject item = a.GetObject();
                 VideoItem v = new VideoItem();
-                v.Width = (int)item.GetNamedNumber(STR_WIDTH);
-                v.Embed = item.GetNamedString(STR_EMBED);
+                if (item.ContainsKey(STR_WIDTH))
+                    v.Width = (int)item.GetNamedNumber(STR_WIDTH);
+                if (item.ContainsKey(STR_EMBED))
+                    v.Embed = item.GetNamedString(STR_EMBED);
                 this._player.Add(v);
             }
         }
@@ -740,10 +819,14 @@ namespace tumbl8r.Data
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._askurl = root.GetNamedString(STR_ASK_URL);
-            this._askname = root.GetNamedString(STR_ASK_NAME);
-            this._question = root.GetNamedString(STR_QUESTION);
-            this._answer = root.GetNamedString(STR_ANSWER);
+            if (root.ContainsKey(STR_ASK_URL))
+                this._askurl = root.GetNamedString(STR_ASK_URL);
+            if (root.ContainsKey(STR_ASK_NAME))
+                this._askname = root.GetNamedString(STR_ASK_NAME);
+            if (root.ContainsKey(STR_QUESTION))
+                this._question = root.GetNamedString(STR_QUESTION);
+            if (root.ContainsKey(STR_ANSWER))
+                this._answer = root.GetNamedString(STR_ANSWER);
         }
 
         private string _askname = string.Empty;
@@ -797,18 +880,26 @@ namespace tumbl8r.Data
         }
 
         public TumblrDataGroup(String jsonvalues)
-            : base(jsonvalues)
         {
             JsonObject root = JsonObject.Parse(jsonvalues);
-            this._title = root.GetNamedString(STR_TITLE);
-            this._posts = (int) root.GetNamedNumber(STR_POSTS);
-            this._name = root.GetNamedString(STR_NAME);
-            this._updated = (int) root.GetNamedNumber(STR_UPDATED);
-            this._description = root.GetNamedString(STR_DESC);
-            this._ask = root.GetNamedBoolean(STR_ASK);
-            this._askanon = root.GetNamedBoolean(STR_ANON);
-            this._likes = (int) root.GetNamedNumber(STR_LIKES);
-            this._url = root.GetNamedString(STR_URL);
+            if (root.ContainsKey(STR_TITLE))
+                this._title = root.GetNamedString(STR_TITLE);
+            if (root.ContainsKey(STR_POSTS))
+                this._posts = (int)root.GetNamedNumber(STR_POSTS);
+            if (root.ContainsKey(STR_NAME))
+                this._name = root.GetNamedString(STR_NAME);
+            if (root.ContainsKey(STR_UPDATED))
+                this._updated = (int)root.GetNamedNumber(STR_UPDATED);
+            if (root.ContainsKey(STR_DESC))
+                this._description = root.GetNamedString(STR_DESC);
+            if (root.ContainsKey(STR_ASK))
+                this._ask = root.GetNamedBoolean(STR_ASK);
+            if (root.ContainsKey(STR_ANON))
+                this._askanon = root.GetNamedBoolean(STR_ANON);
+            if (root.ContainsKey(STR_LIKES))
+                this._likes = (int)root.GetNamedNumber(STR_LIKES);
+            if (root.ContainsKey(STR_URL))
+                this._url = root.GetNamedString(STR_URL);
         }
 
         private ObservableCollection<TumblrDataCommon> _items = new ObservableCollection<TumblrDataCommon>();
@@ -951,10 +1042,10 @@ namespace tumbl8r.Data
             return _tumblrDataSource.AllGroups;
         }
 
-        public static TumblrDataGroup GetGroup(String id)
+        public static TumblrDataGroup GetGroup(String url)
         {
             // Simple linear search is acceptable for small data sets
-            var matches = _tumblrDataSource.AllGroups.Where((group) => group.Id.Equals(id));
+            var matches = _tumblrDataSource.AllGroups.Where((group) => group.Url.Equals(url));
             if (matches.Count() == 1) return matches.First();
             return null;
         }
@@ -972,7 +1063,7 @@ namespace tumbl8r.Data
             // Retrieve dashboard data from tumblr
             var client = new HttpClient();
             client.MaxResponseContentBufferSize = 1024 * 1024; // Read up to 1 MB of data
-            var response = await client.GetAsync(new Uri("http://api.tumblr.com/v2/blog/optimuscline.com/posts/?api_key=rJfXOBD2kHRdY9uj45CAztR1R9QbGSSCBh1z3QTLd0kJI2y5a0"));
+            var response = await client.GetAsync(new Uri("http://api.tumblr.com/v2/blog/optimuscline.com/posts/photo?api_key=rJfXOBD2kHRdY9uj45CAztR1R9QbGSSCBh1z3QTLd0kJI2y5a0"));
             var result = await response.Content.ReadAsStringAsync();
 
             // Parse the JSON recipe data
@@ -993,7 +1084,13 @@ namespace tumbl8r.Data
             var file = await Package.Current.InstalledLocation.GetFileAsync("Data\\Posts.txt");
             var result = await FileIO.ReadTextAsync(file);
 
-            JsonObject resp = JsonObject.Parse(result);
+            if (result.Length > 1 && result[0] == '\xfeff')
+            {
+                result = result.Remove(0, 1);
+            }
+            result = result.Replace('\xfeff', ' ');
+
+            var resp = JsonObject.Parse(result);
             if (resp.GetNamedObject("meta").GetNamedString("msg").Equals("OK"))
             {
                 JsonArray posts = resp.GetNamedObject("response").GetNamedArray("posts");
@@ -1006,37 +1103,38 @@ namespace tumbl8r.Data
 
         private static void AddPostsToGroup(JsonArray array, String id)
         {
-            foreach (JsonObject item in array)
+            foreach (var item in array)
             {
+                JsonObject obj = item.GetObject();
                 TumblrDataCommon post = null;
-                string type = item.GetNamedString(TumblrDataCommon.STR_TYPE);
+                string type = obj.GetNamedString(TumblrDataCommon.STR_TYPE);
 
                 switch (type)
                 {
                     // text, quote, link, answer, video, audio, photo, chat
                     case "text":
-                        post = new TumblrTextDataItem(item.ToString());
+                        post = new TumblrTextDataItem(item.Stringify());
                         break;
                     case "quote":
-                        post = new TumblrQuoteDataItem(item.ToString());
+                        post = new TumblrQuoteDataItem(item.Stringify());
                         break;
                     case "link":
-                        post = new TumblrLinkDataItem(item.ToString());
+                        post = new TumblrLinkDataItem(item.Stringify());
                         break;
                     case "answer":
-                        post = new TumblrAnswerDataItem(item.ToString());
+                        post = new TumblrAnswerDataItem(item.Stringify());
                         break;
                     case "video":
-                        post = new TumblrVideoDataItem(item.ToString());
+                        post = new TumblrVideoDataItem(item.Stringify());
                         break;
                     case "audio":
-                        post = new TumblrAudioDataItem(item.ToString());
+                        post = new TumblrAudioDataItem(item.Stringify());
                         break;
                     case "photo":
-                        post = new TumblrPhotoDataItem(item.ToString());
+                        post = new TumblrPhotoDataItem(item.Stringify());
                         break;
                     case "chat":
-                        post = new TumblrChatDataItem(item.ToString());
+                        post = new TumblrChatDataItem(item.Stringify());
                         break;
                 }
 
@@ -1047,10 +1145,10 @@ namespace tumbl8r.Data
 
         private static TumblrDataGroup CreateTumblrGroup(JsonObject obj)
         {
-            TumblrDataGroup group = new TumblrDataGroup(obj.ToString());
+            TumblrDataGroup group = new TumblrDataGroup(obj.Stringify());
             string hostname = group.Url;
-            hostname = hostname.Substring(9);
-            hostname = hostname.Substring(0, hostname.Length - 2);
+            hostname = hostname.Substring(7);
+            hostname = hostname.Substring(0, hostname.Length - 1);
             group.SetGroupImage("http://api.tumblr.com/v2/blog/" + hostname + "/avatar/512");
 
             _tumblrDataSource.AllGroups.Add(group);

@@ -1,4 +1,5 @@
 ﻿using tumbl8r.Common;
+using tumbl8r.Data;
 
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,9 @@ namespace tumbl8r
                         //Assume there is no state and continue
                     }
                 }
+
+                // Load data
+                await TumblrDataSource.LoadRemoteDataAsync();
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;

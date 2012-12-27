@@ -40,8 +40,8 @@ namespace tumbl8r
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
-            this.DefaultViewModel["Groups"] = sampleDataGroups;
+            var tumblrDataGroups = TumblrDataSource.GetGroups((String)navigationParameter);
+            this.DefaultViewModel["Groups"] = tumblrDataGroups;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace tumbl8r
 
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            this.Frame.Navigate(typeof(GroupDetailPage), ((SampleDataGroup)group).UniqueId);
+            this.Frame.Navigate(typeof(GroupDetailPage), ((TumblrDataGroup)group).Name);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace tumbl8r
         {
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
+            var itemId = ((TumblrDataCommon)e.ClickedItem).Id;
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
         }
     }
