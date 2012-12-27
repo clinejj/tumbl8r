@@ -48,7 +48,8 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick">
+            ItemClick="ItemView_ItemClick" 
+            Background="#FF2F4B66">
 
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>                        
@@ -119,7 +120,8 @@
         </ListView>
 
         <!-- Back button and page title -->
-        <Grid>
+        <Grid 
+            Background="#FF2F4B66">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
