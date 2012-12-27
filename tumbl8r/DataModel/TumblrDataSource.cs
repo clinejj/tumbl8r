@@ -1042,10 +1042,10 @@ namespace tumbl8r.Data
             return _tumblrDataSource.AllGroups;
         }
 
-        public static TumblrDataGroup GetGroup(String url)
+        public static TumblrDataGroup GetGroup(String name)
         {
             // Simple linear search is acceptable for small data sets
-            var matches = _tumblrDataSource.AllGroups.Where((group) => group.Url.Equals(url));
+            var matches = _tumblrDataSource.AllGroups.Where((group) => group.Name.Equals(name));
             if (matches.Count() == 1) return matches.First();
             return null;
         }
@@ -1071,7 +1071,7 @@ namespace tumbl8r.Data
             if (resp.GetNamedObject("meta").GetNamedString("msg").Equals("OK"))
             {
                 JsonArray posts = resp.GetNamedObject("response").GetNamedArray("posts");
-                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("url");
+                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("name");
                 CreateTumblrGroup(resp.GetNamedObject("response").GetNamedObject("blog"));
                 // Convert the JSON objects into TumblrDataItems and TumblrDataGroups
                 AddPostsToGroup(posts, name);
@@ -1094,7 +1094,7 @@ namespace tumbl8r.Data
             if (resp.GetNamedObject("meta").GetNamedString("msg").Equals("OK"))
             {
                 JsonArray posts = resp.GetNamedObject("response").GetNamedArray("posts");
-                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("url");
+                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("name");
                 CreateTumblrGroup(resp.GetNamedObject("response").GetNamedObject("blog"));
                 // Convert the JSON objects into TumblrDataItems and TumblrDataGroups
                 AddPostsToGroup(posts, name);
