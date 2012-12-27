@@ -27,7 +27,9 @@ using Windows.Storage;
 namespace tumbl8r.Data
 {
     /// <summary>
-    /// Base class for <see cref="TumblrDataItem"/> and <see cref="TumblrDataGroup"/> that
+    /// Base class for <see cref="TumblrTextDataItem"/>,  <see cref="TumblrPhotoDataItem"/>, <see cref="TumblrQuoteDataItem"/>, 
+    /// <see cref="TumblrLinkDataItem"/>, <see cref="TumblrChatDataItem"/>, <see cref="TumblrAudioDataItem"/>, 
+    /// <see cref="TumblrVideoDataItem"/>, <see cref="TumblrAnswerDataItem"/>, and <see cref="TumblrDataGroup"/> that
     /// defines properties common to both.
     /// </summary>
     [Windows.Foundation.Metadata.WebHostHidden]
@@ -73,7 +75,7 @@ namespace tumbl8r.Data
             this._type = string.Empty;
         }
 
-        public TumblrDataCommon(string jsonstring)
+        public TumblrDataCommon(String jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
             this._blog_name = root.GetNamedString(STR_BLOG_NAME);
@@ -95,9 +97,9 @@ namespace tumbl8r.Data
             this._type = root.GetNamedString(STR_TYPE);
         }
 
-        public TumblrDataCommon(string blogName, long id, string postURL, string type, long timestamp, string date, string format, string reblogKey,
-                                string tags, bool bookmarkLet, bool mobile, string sourceURL, string sourceTitle, bool liked, 
-                                string state, long totalPosts)
+        public TumblrDataCommon(String blogName, long id, String postURL, String type, long timestamp, String date, String format, String reblogKey,
+                                String tags, bool bookmarkLet, bool mobile, String sourceURL, String sourceTitle, bool liked, 
+                                String state, long totalPosts)
         {
             this._blog_name = blogName;
             this._bookmarklet = bookmarkLet;
@@ -231,7 +233,7 @@ namespace tumbl8r.Data
             set { _total_posts = value; }
         }
 
-        private void setTagsFromString(string jsontags)
+        private void setTagsFromString(String jsontags)
         {
             var items = JsonArray.Parse(jsontags);
             foreach (var item in items) 
@@ -262,12 +264,12 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrTextDataItem(string jsonstring)
+        public TumblrTextDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
-            this._body = root.GetNamedString(STR_SOURCE);
-            this._title = root.GetNamedString(STR_TEXT);
+            this._body = root.GetNamedString(STR_BODY);
+            this._title = root.GetNamedString(STR_TITLE);
         }
 
         private string _title = string.Empty;
@@ -302,7 +304,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrPhotoDataItem(string jsonstring)
+        public TumblrPhotoDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -400,7 +402,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrQuoteDataItem(string jsonstring)
+        public TumblrQuoteDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -437,7 +439,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrLinkDataItem(string jsonstring)
+        public TumblrLinkDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -485,7 +487,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrChatDataItem(string jsonstring)
+        public TumblrChatDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -573,7 +575,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrAudioDataItem(string jsonstring)
+        public TumblrAudioDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -667,7 +669,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrVideoDataItem(string jsonstring)
+        public TumblrVideoDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -734,7 +736,7 @@ namespace tumbl8r.Data
         {
         }
 
-        public TumblrAnswerDataItem(string jsonstring)
+        public TumblrAnswerDataItem(String jsonstring)
             : base(jsonstring)
         {
             JsonObject root = JsonObject.Parse(jsonstring);
@@ -779,23 +781,43 @@ namespace tumbl8r.Data
     /// </summary>
     public class TumblrDataGroup : TumblrDataCommon
     {
+        public static string STR_TITLE = "title";
+        public static string STR_POSTS = "posts";
+        public static string STR_NAME = "name";
+        public static string STR_UPDATED = "updated";
+        public static string STR_DESC = "description";
+        public static string STR_ASK = "ask";
+        public static string STR_ANON = "ask_anon";
+        public static string STR_LIKES = "likes";
+        public static string STR_URL = "url";
+
         public TumblrDataGroup()
             : base()
         {
         }
 
-        public TumblrDataGroup(String uniqueId, String title, String shortTitle, String imagePath, String description)
-            : base(uniqueId, title, shortTitle, imagePath)
+        public TumblrDataGroup(String jsonvalues)
+            : base(jsonvalues)
         {
+            JsonObject root = JsonObject.Parse(jsonvalues);
+            this._title = root.GetNamedString(STR_TITLE);
+            this._posts = (int) root.GetNamedNumber(STR_POSTS);
+            this._name = root.GetNamedString(STR_NAME);
+            this._updated = (int) root.GetNamedNumber(STR_UPDATED);
+            this._description = root.GetNamedString(STR_DESC);
+            this._ask = root.GetNamedBoolean(STR_ASK);
+            this._askanon = root.GetNamedBoolean(STR_ANON);
+            this._likes = (int) root.GetNamedNumber(STR_LIKES);
+            this._url = root.GetNamedString(STR_URL);
         }
 
-        private ObservableCollection<TumblrTextDataItem> _items = new ObservableCollection<TumblrTextDataItem>();
-        public ObservableCollection<TumblrTextDataItem> Items
+        private ObservableCollection<TumblrDataCommon> _items = new ObservableCollection<TumblrDataCommon>();
+        public ObservableCollection<TumblrDataCommon> Items
         {
             get { return this._items; }
         }
 
-        public IEnumerable<TumblrTextDataItem> TopItems
+        public IEnumerable<TumblrDataCommon> TopItems
         {
             // Provides a subset of the full items collection to bind to from a GroupedItemsPage
             // for two reasons: GridView will not virtualize large items collections, and it
@@ -807,12 +829,69 @@ namespace tumbl8r.Data
             get { return this._items.Take(12); }
         }
 
+        private string _title = string.Empty;
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
+        }
+
+        private long _posts = 0;
+        public long Posts
+        {
+            get { return _posts; }
+            set { _posts = value; }
+        }
+
+        private string _name = string.Empty;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        private long _updated = 0;
+        public long Updated
+        {
+            get { return _updated; }
+            set { _updated = value; }
+        }
+
+        private bool _ask = false;
+        public bool Ask
+        {
+            get { return _ask; }
+            set { _ask = value; }
+        }
+
+        private bool _askanon = false;
+        public bool Askanon
+        {
+            get { return _askanon; }
+            set { _askanon = value; }
+        }
+
+        private long _likes = 0;
+        public long Likes
+        {
+            get { return _likes; }
+            set { _likes = value; }
+        }
+
         private string _description = string.Empty;
         public string Description
         {
             get { return this._description; }
             set { this.SetProperty(ref this._description, value); }
         }
+
+        private string _url = string.Empty;
+        public string Url
+        {
+            get { return _url; }
+            set { _url = value; }
+        }
+
 
         private ImageSource _groupImage;
         private string _groupImagePath;
@@ -834,7 +913,7 @@ namespace tumbl8r.Data
             }
         }
 
-        public int RecipesCount
+        public int PostsCount
         {
             get
             {
@@ -865,153 +944,114 @@ namespace tumbl8r.Data
             get { return this._allGroups; }
         }
 
-        public static IEnumerable<TumblrDataGroup> GetGroups(string uniqueId)
+        public static IEnumerable<TumblrDataGroup> GetGroups(String uniqueId)
         {
             if (!uniqueId.Equals("AllGroups")) throw new ArgumentException("Only 'AllGroups' is supported as a collection of groups");
 
             return _tumblrDataSource.AllGroups;
         }
 
-        public static TumblrDataGroup GetGroup(string uniqueId)
+        public static TumblrDataGroup GetGroup(String id)
         {
             // Simple linear search is acceptable for small data sets
-            var matches = _tumblrDataSource.AllGroups.Where((group) => group.UniqueId.Equals(uniqueId));
+            var matches = _tumblrDataSource.AllGroups.Where((group) => group.Id.Equals(id));
             if (matches.Count() == 1) return matches.First();
             return null;
         }
 
-        public static TumblrTextDataItem GetItem(string uniqueId)
+        public static TumblrDataCommon GetItem(String id)
         {
             // Simple linear search is acceptable for small data sets
-            var matches = _tumblrDataSource.AllGroups.SelectMany(group => group.Items).Where((item) => item.UniqueId.Equals(uniqueId));
+            var matches = _tumblrDataSource.AllGroups.SelectMany(group => group.Items).Where((item) => item.Id.Equals(id));
             if (matches.Count() == 1) return matches.First();
             return null;
         }
 
         public static async Task LoadRemoteDataAsync()
         {
-            // Retrieve recipe data from Azure
+            // Retrieve dashboard data from tumblr
             var client = new HttpClient();
             client.MaxResponseContentBufferSize = 1024 * 1024; // Read up to 1 MB of data
-            var response = await client.GetAsync(new Uri("http://contosorecipes8.blob.core.windows.net/AzureRecipesRP"));
+            var response = await client.GetAsync(new Uri("http://api.tumblr.com/v2/blog/optimuscline.com/posts/?api_key=rJfXOBD2kHRdY9uj45CAztR1R9QbGSSCBh1z3QTLd0kJI2y5a0"));
             var result = await response.Content.ReadAsStringAsync();
 
             // Parse the JSON recipe data
-            var recipes = JsonArray.Parse(result);
-
-            // Convert the JSON objects into RecipeDataItems and RecipeDataGroups
-            CreateRecipesAndRecipeGroups(recipes);
+            JsonObject resp = JsonObject.Parse(result);
+            if (resp.GetNamedObject("meta").GetNamedString("msg").Equals("OK"))
+            {
+                JsonArray posts = resp.GetNamedObject("response").GetNamedArray("posts");
+                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("url");
+                CreateTumblrGroup(resp.GetNamedObject("response").GetNamedObject("blog"));
+                // Convert the JSON objects into TumblrDataItems and TumblrDataGroups
+                AddPostsToGroup(posts, name);
+            }
         }
 
         public static async Task LoadLocalDataAsync()
         {
             // Retrieve recipe data from Recipes.txt
-            var file = await Package.Current.InstalledLocation.GetFileAsync("Data\\Recipes.txt");
+            var file = await Package.Current.InstalledLocation.GetFileAsync("Data\\Posts.txt");
             var result = await FileIO.ReadTextAsync(file);
 
-            // Parse the JSON recipe data
-            var recipes = JsonArray.Parse(result);
-
-            // Convert the JSON objects into RecipeDataItems and RecipeDataGroups
-            CreateRecipesAndRecipeGroups(recipes);
-        }
-
-        private static void CreateRecipesAndRecipeGroups(JsonArray array)
-        {
-            foreach (var item in array)
+            JsonObject resp = JsonObject.Parse(result);
+            if (resp.GetNamedObject("meta").GetNamedString("msg").Equals("OK"))
             {
-                var obj = item.GetObject();
-                TumblrTextDataItem recipe = new TumblrTextDataItem();
-                TumblrDataGroup group = null;
-
-                foreach (var key in obj.Keys)
-                {
-                    IJsonValue val;
-                    if (!obj.TryGetValue(key, out val))
-                        continue;
-
-                    switch (key)
-                    {
-                        case "key":
-                            recipe.UniqueId = val.GetNumber().ToString();
-                            break;
-                        case "title":
-                            recipe.Title = val.GetString();
-                            break;
-                        case "shortTitle":
-                            recipe.ShortTitle = val.GetString();
-                            break;
-                        case "preptime":
-                            recipe.PrepTime = (int)val.GetNumber();
-                            break;
-                        case "directions":
-                            recipe.Directions = val.GetString();
-                            break;
-                        case "ingredients":
-                            var ingredients = val.GetArray();
-                            var list = (from i in ingredients select i.GetString()).ToList();
-                            recipe.Ingredients = new ObservableCollection<string>(list);
-                            break;
-                        case "backgroundImage":
-                            recipe.SetImage(val.GetString());
-                            break;
-                        case "tileImage":
-                            recipe.SetTileImage(val.GetString());
-                            break;
-                        case "group":
-                            var recipeGroup = val.GetObject();
-
-                            IJsonValue groupKey;
-                            if (!recipeGroup.TryGetValue("key", out groupKey))
-                                continue;
-
-                            group = _tumblrDataSource.AllGroups.FirstOrDefault(c => c.UniqueId.Equals(groupKey.GetString()));
-
-                            if (group == null)
-                                group = CreateRecipeGroup(recipeGroup);
-
-                            recipe.Group = group;
-                            break;
-                    }
-                }
-
-                if (group != null)
-                    group.Items.Add(recipe);
+                JsonArray posts = resp.GetNamedObject("response").GetNamedArray("posts");
+                string name = resp.GetNamedObject("response").GetNamedObject("blog").GetNamedString("url");
+                CreateTumblrGroup(resp.GetNamedObject("response").GetNamedObject("blog"));
+                // Convert the JSON objects into TumblrDataItems and TumblrDataGroups
+                AddPostsToGroup(posts, name);
             }
         }
 
-        private static TumblrDataGroup CreateRecipeGroup(JsonObject obj)
+        private static void AddPostsToGroup(JsonArray array, String id)
         {
-            TumblrDataGroup group = new TumblrDataGroup();
-
-            foreach (var key in obj.Keys)
+            foreach (JsonObject item in array)
             {
-                IJsonValue val;
-                if (!obj.TryGetValue(key, out val))
-                    continue;
+                TumblrDataCommon post = null;
+                string type = item.GetNamedString(TumblrDataCommon.STR_TYPE);
 
-                switch (key)
+                switch (type)
                 {
-                    case "key":
-                        group.UniqueId = val.GetString();
+                    // text, quote, link, answer, video, audio, photo, chat
+                    case "text":
+                        post = new TumblrTextDataItem(item.ToString());
                         break;
-                    case "title":
-                        group.Title = val.GetString();
+                    case "quote":
+                        post = new TumblrQuoteDataItem(item.ToString());
                         break;
-                    case "shortTitle":
-                        group.ShortTitle = val.GetString();
+                    case "link":
+                        post = new TumblrLinkDataItem(item.ToString());
                         break;
-                    case "description":
-                        group.Description = val.GetString();
+                    case "answer":
+                        post = new TumblrAnswerDataItem(item.ToString());
                         break;
-                    case "backgroundImage":
-                        group.SetImage(val.GetString());
+                    case "video":
+                        post = new TumblrVideoDataItem(item.ToString());
                         break;
-                    case "groupImage":
-                        group.SetGroupImage(val.GetString());
+                    case "audio":
+                        post = new TumblrAudioDataItem(item.ToString());
+                        break;
+                    case "photo":
+                        post = new TumblrPhotoDataItem(item.ToString());
+                        break;
+                    case "chat":
+                        post = new TumblrChatDataItem(item.ToString());
                         break;
                 }
+
+                if (post != null)
+                    GetGroup(id).Items.Add(post);
             }
+        }
+
+        private static TumblrDataGroup CreateTumblrGroup(JsonObject obj)
+        {
+            TumblrDataGroup group = new TumblrDataGroup(obj.ToString());
+            string hostname = group.Url;
+            hostname = hostname.Substring(9);
+            hostname = hostname.Substring(0, hostname.Length - 2);
+            group.SetGroupImage("http://api.tumblr.com/v2/blog/" + hostname + "/avatar/512");
 
             _tumblrDataSource.AllGroups.Add(group);
             return group;
